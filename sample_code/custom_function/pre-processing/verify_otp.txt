@@ -1,0 +1,29 @@
+{* Get member information *}
+{* Endpoint Configuration Parameters *}
+{assign_array var='method_params'                           values=''}
+{assign_array var='method_params.filter_request_allow_list' values='email'}
+{assign var='method_params.filter'                          value="email = `$body.email`"}
+{assign var='method_params.cnt'                             value='1'}
+
+{api_method
+    var='member_info'
+    model='Member'
+    method='list'
+    version='1'
+    method_params=$method_params}
+
+{* Authentication code verification *}
+{if $member_info.list[0].otp != $smarty.post.otp}
+  {append var="errors" value="The authentication code is incorrect."}
+{/if}
+
+{* Expiration date verification *}
+{date var='date' time='now' format='Y-m-d H:i:s'}
+{if $member_info.list[0].otp_exp < $date}
+  {append var="errors" value="Authentication code has expired."}
+{/if}
+
+{* Request Value Adjustment *}
+{assign_array var='request'          values=''}
+{assign       var='request.email'    value=$body.email}
+{assign       var='request.password' value=$body.password}

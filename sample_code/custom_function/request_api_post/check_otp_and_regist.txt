@@ -1,0 +1,48 @@
+{* Initialization of error variables *}
+{assign_array var="errors" values=""}
+
+{* Get pre-member information *}
+{* Request Body *}
+{assign_array var='body_internal'                values=''}
+{assign       var='body_internal.email_hash'     value=$smarty.post.email_hash}
+
+{api_internal
+    var='response'
+    status_var='status'
+    endpoint='/rcms-api/1/2step_member_invite'
+    method='POST'
+    queries=$body_internal}
+
+{* Authentication code verification *}
+{if $response.data.ext_info.otp != $smarty.post.otp}
+  {append var="errors" value="The authentication code is incorrect."}
+{/if}
+
+{* Expiration date verification *}
+{date var='date' time='now' format='Y-m-d H:i:s'}
+{if $response.data.ext_info.otp_exp < $date}
+  {append var="errors" value="Authentication code has expired."}
+{/if}
+
+{* Request Body *}
+{assign_array var='body_regist'           values=''}
+{assign       var='body_regist.name1'     value=$response.data.ext_info.name}
+{assign       var='body_regist.login_pwd' value=$response.data.ext_info.login_pwd}
+{assign       var='body_regist.tel'       value=$response.data.ext_info.tel}
+{assign       var='body_regist.email'     value=$response.data.email}
+
+{* Member Registration Process *}
+{api_internal
+    var='result'
+    status_var='status'
+    endpoint='/rcms-api/3/2step_member_regist'
+    method='POST'
+    queries=$body_regist
+    member_id="1"}
+
+{* Set Response *}
+{if $status == "1"}
+  {assign var=data value=$result}
+{else}
+  {append var="errors" value=$result.errors[0]}
+{/if}

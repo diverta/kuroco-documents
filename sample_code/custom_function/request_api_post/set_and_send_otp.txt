@@ -1,0 +1,52 @@
+{* Get pre_member_id *}
+{* Request Body *}
+{assign_array var='body_internal'     values=''}
+{assign       var='body_internal'     value=$smarty.post}
+
+{api_internal
+    var='pre_member_info'
+    status_var='status'
+    endpoint='/rcms-api/1/2step_member_invite'
+    method='POST'
+    queries=$body_internal}
+
+{* Creation of random numbers (6 digits, filled with zeros) *}
+{math assign=random_num equation='rand(1, 999999)'}
+{assign var=random_num value=$random_num|string_format:"%06d"}
+
+{* Create expiration date *}
+{date var='exp_time' time='now +1hour' format='Y-m-d H:i:s'}
+
+{* Make Request Body *}
+{assign_array var='new_info'                    values=''}
+{assign       var='new_info.email'              value=$pre_member_info.data.email}
+{assign_array var='new_info.ext_info'           values=''}
+{assign       var='new_info.ext_info.name'      value=$pre_member_info.data.ext_info.name}
+{assign       var='new_info.ext_info.login_pwd' value=$pre_member_info.data.ext_info.login_pwd}
+{assign       var='new_info.ext_info.tel'       value=$pre_member_info.data.ext_info.tel}
+{assign       var='new_info.ext_info.otp'       value=$random_num}
+{assign       var='new_info.ext_info.otp_exp'   value=$exp_time}
+
+{* Update pre_member *}
+{api_internal
+    var='responce'
+    status_var='status'
+    endpoint="/rcms-api/3/pre_member_update/`$pre_member_info.data.pre_member_id`"
+    method='POST'
+    queries=$new_info
+    member_id="1"}
+
+{* Send OTP *}
+{sendmail
+    var='result'
+    to=$pre_member_info.data.email
+    subject='OTP info'
+    contents="This is your OTP [`$random_num`]"}
+
+{* Set Response *}
+{if $result == "1" && $status == "1"}
+    {assign var=data value="One Time Password has been sent."}
+{else}
+    {assign_array var=errors values=''}
+    {append       var=errors value="An error has occurred."}
+{/if}
