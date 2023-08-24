@@ -1,0 +1,13 @@
+{* Get member field config *}
+{api_method
+    var='member_form_config'
+    model='MemberForm'
+    method='details'
+    version='1'}
+{* Compare the member field and requested items *}
+{foreach from=$member_form_config.details key=key item=item}
+    {* If no numeric items in the request, add it with default value *}
+    {if $item.ext_column_flg && $item.type eq "number" && !isset($body.$key)}
+        {append var=request index=$key value=0}
+    {/if}
+{/foreach}
