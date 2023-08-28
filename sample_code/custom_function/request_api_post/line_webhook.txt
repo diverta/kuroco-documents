@@ -1,0 +1,10 @@
+{assign var=member values=''}
+{assign var=member.name1 value="LINE User"}
+{assign var=member.email value="`$smarty.request.events[0].source.userId`@text.line.r-cms.jp"}
+{assign var=member.login_ok_flg value=0}
+{api_internal
+    endpoint='/rcms-api/39/member/line/register'
+    method='POST'
+    queries=$member
+    var=result
+    member_id=1}
