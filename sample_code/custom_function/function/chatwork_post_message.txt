@@ -1,0 +1,22 @@
+{* Set Request Headers *}
+{secret var='apiKey' key='CHATWORK_API_TOKEN'}
+{append var=headers value="x-chatworktoken: `$apiKey`"}
+{append var=headers value="accept: application/json"}
+{append var=headers value="content-type: application/x-www-form-urlencoded"}
+
+{* Create JSON of Request *}
+{assign_array var='body'                values=''}
+{assign       var='body.self_unread'    value=1}
+{assign       var='body.body'           value=$text}
+
+{* Send request to Chatwork *}
+{api
+    endpoint="https://api.chatwork.com/v2/rooms/`$room_id`/messages"
+    method='POST'
+    headers=$headers
+    body=$body
+    json_var=response
+    status_var=status
+}
+
+{return value=$status}
