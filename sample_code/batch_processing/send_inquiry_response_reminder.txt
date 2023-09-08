@@ -1,0 +1,24 @@
+{* Set endpoint parameters *}
+{assign_array var='method_params'                  values=''}
+{assign       var='method_params.custom_search_id' value='21'}
+{assign       var='method_params.cnt'              value=1}
+
+{* Send request to Member::list *}
+{api_method
+    var='member'
+    model='Member'
+    method='list'
+    version='1'
+    method_params=$method_params
+}
+
+{* If submissions include target members, send an email *}
+{if $member.list != null}
+{capture name=mail_body}
+There is an inquiry that has been pending for 4 hours.
+
+Please check it using the following URL.
+{$smarty.const.ROOT_MNG_URL}/management/inquiry/inquiry_bn_list/?filters=%7B%22filter%22%3A%22status%20in%20%5B0%5D%20AND%20receive_date%20%3C%3Arelatively%20%5C%22-4%20hour%5C%22%22%2C%22order%22%3A%22%22%7D&inquiry_id=15
+{/capture}
+{sendmail to='YOUR_MAIL_ADDRESS@example.com' subject="Reminder" contents=$smarty.capture.mail_body}
+{/if}
