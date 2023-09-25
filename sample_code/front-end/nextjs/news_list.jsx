@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 async function getData() {
-  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/rcms-api/1/news');
+  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/rcms-api/4/news');
   return res.json()
 }
 
