@@ -26,11 +26,12 @@
         {append var=row index=date value=$now}        
         {write_file path=$path value=$row is_append=1}
         {write_file path=$path value="\n" is_append=1}
+        {assign var=make_log_file value=true}
     {/if}
 {/read_dir}
 
 {* Write the log file (temporary area) to the file manager *}
-{if $file_info != null}
+{if $make_log_file}
     {date var='file_name' time='now' format='Ymd_His'}
     {put_file tmp_path=$path path="/files/ltd/file_plugins_tutorial/logs/log_`$file_name`.csv"}
 {/if}
