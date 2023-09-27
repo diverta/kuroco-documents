@@ -1,0 +1,36 @@
+{* Create the header row of the log file *}
+{assign var=header_columns value=$empty_array}
+{append var=header_columns index=path     value="Path"}
+{append var=header_columns index=date     value="Deleted date"}
+
+{* Add the header row to the log file (temporary area) *}
+{write_file var=path value=$header_columns}
+{write_file path=$path value="\n" is_append=1}
+
+{* Set the timestamp to compare *}
+{assign var='timestamp_to_compare' value='-1 week'|strtotime}
+{* Set the current date and time *}
+{date var='now' time='now' format='Y-m-d H:i:s'}
+
+{* Read each file in the directory one by one *}
+{read_dir name='files_user' path='/files/ltd/file_plugins_tutorial/assets' file_var='file_info' type='file' recursive=true}
+    {* Get the update date and time (timestamp) of the file *}
+    {assign var='timestamp_updated_at' value=$file_info.mtime}
+    {* Compare the timestamps *}
+    {if $timestamp_updated_at < $timestamp_to_compare}
+        {* If the update date and time is more than a week ago, delete the file *}
+        {remove_file status_var='status' path=$file_info.path}
+        {* Add the information of the deleted file to the log file (temporary area) *}
+        {assign var=row value=$empty_array}
+        {append var=row index=path value=$file_info.path}
+        {append var=row index=date value=$now}        
+        {write_file path=$path value=$row is_append=1}
+        {write_file path=$path value="\n" is_append=1}
+    {/if}
+{/read_dir}
+
+{* Write the log file (temporary area) to the file manager *}
+{if $file_info != null}
+    {date var='file_name' time='now' format='Ymd_His'}
+    {put_file tmp_path=$path path="/files/ltd/file_plugins_tutorial/logs/log_`$file_name`.csv"}
+{/if}
