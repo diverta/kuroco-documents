@@ -1,0 +1,63 @@
+{* Get content *}
+{assign_array var='method_params'                 values=''}
+{assign       var='method_params.topics_id'       value=$topics_id}
+{api_method
+    var='topics'
+    model='Topics'
+    method='details'
+    version='1'
+    method_params=$method_params
+}
+
+{* Get glossary_id *}
+{assign_array var='method_params'                 values=''}
+{assign       var='method_params.topics_id'       value='glossary'}
+{api_method
+    var='glossary'
+    model='Topics'
+    method='details'
+    version='1'
+    method_params=$method_params
+}
+
+{* Set Request Headers *}
+{secret var='apiKey' key='DEEPL_API_KEY'}
+{append var=headers value="Authorization: DeepL-Auth-Key `$apiKey`"}
+{append var=headers value="Content-Type: application/json"}
+
+{* Create JSON of translate request *}
+{assign_array var='body'                   values=''}
+{assign_array var='body.text'              values=''}
+{append       var='body.text'              value=$topics.details.subject}
+{append       var='body.text'              value=$topics.details.source_text}
+{assign       var='body.source_lang'       value="JA"}
+{assign       var='body.target_lang'       value="EN"}
+{assign       var='body.tag_handling'      value="html"}
+{assign       var='body.glossary_id'       value=$glossary.details.glossary_id}
+
+{* Send translate request to DeepL *}
+{api
+    endpoint='https://api-free.deepl.com/v2/translate'
+    method='POST'
+    headers=$headers
+    body=$body
+    json_var=response
+    status_var=status
+}
+
+{* Set queries *}
+{assign_array var='body'             values=''}
+{assign       var='body.subject'     value=$response.translations[0].text}
+{assign       var='body.source_text' value=$response.translations[1].text}
+
+{* Update Secondary language content*}
+{api_internal
+    var='topics'
+    status_var='status'
+    endpoint="/rcms-api/3/update_content/`$topics_id`?_doc_lang=en"
+    method='POST'
+    queries=$body
+    member_id="1"
+}
+
+{logger msg1="Secondary languages updated." msg2=$response.translations[0].text msg3=$response.translations[1].text}

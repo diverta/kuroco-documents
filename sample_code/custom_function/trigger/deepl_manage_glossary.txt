@@ -1,0 +1,72 @@
+{* Suppressing the trigger's infinite loop *}
+{if $smarty.server.HTTP_RCMS_X_API_REQUEST_CNT > 0}
+    {return}
+{/if}
+
+{* Obtaining the glossary added to the Kuroco content *}
+{api_internal
+    var='topics'
+    status_var='status'
+    endpoint="/rcms-api/3/get_glossary/`$topics_id`"
+    method='GET'
+    member_id="1"
+}
+
+{* Set Request Headers *}
+{secret var='apiKey' key='DEEPL_API_KEY'}
+{append var=headers value="Authorization: DeepL-Auth-Key `$apiKey`"}
+{append var=headers value="Content-Type: application/json"}
+
+{* Send delete glossary request to DeepL *}
+{if $topics.details.glossary_id != ''}
+{api
+    endpoint="https://api-free.deepl.com/v2/glossaries/`$topics.details.glossary_id`"
+    method='DELETE'
+    headers=$headers
+    var=response
+    status_var=status
+}
+{/if}
+
+{* Create JSON of new glossary *}
+{assign_array var='body'                   values=''}
+{assign       var='body.name'              value="My Glossary"}
+{assign       var='body.source_lang'       value="ja"}
+{assign       var='body.target_lang'       value="en"}
+{assign       var='body.entries_format'    value="csv"}
+
+{* Create entries (comma-separated, with a newline between each pair) *}
+{assign var='body.entries' value=""}
+{foreach name=make_entries from=$topics.details.glossary key=key item=item}
+    {assign var='body.entries' value=$body.entries|cat:"`$item.source_lang`,`$item.target_lang`"}
+    {if not $smarty.foreach.make_entries.last}
+        {assign var='body.entries' value=$body.entries|cat:"\n"}
+    {/if}
+{/foreach}
+
+{* Send create glossary request to DeepL *}
+{api
+    endpoint='https://api-free.deepl.com/v2/glossaries'
+    method='POST'
+    headers=$headers
+    body=$body
+    json_var=response
+    var=raw_response
+    status_var=status
+}
+
+{* Set queries *}
+{assign_array var='body'            values=''}
+{assign       var='body.glossary_id' value=$response.glossary_id}
+
+{* Kuroco's glossary_id update *}
+{api_internal
+    var='topics'
+    status_var='status'
+    endpoint="/rcms-api/3/update_glossary/`$topics_id`"
+    method='POST'
+    queries=$body
+    member_id="1"
+}
+
+{logger msg1="deepl_manage_glossary" msg2=$raw_response}
