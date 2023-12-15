@@ -1,0 +1,19 @@
+{* Retrieve content after the update*}
+{assign_array var='method_params'                 values=''}
+{assign       var='method_params.topics_id'       value=$topics_id}
+{assign       var='method_params.ignore_open_flg' value=true}
+{api_method var='curr_content' model='Topics' method='details' version=1 method_params=$method_params}
+{assign var='curr_content' value=$curr_content.details|@rcms_json_encode|json_decode}
+
+{* Retrieve content before the update *}
+{assign_globals var='prev_content' key='prev_content'}
+{assign var='prev_content' value=$prev_content.details|@rcms_json_encode|json_decode}
+
+{* Compare values before and after update *}
+{if $prev_content.status.key != $curr_content.status.key}
+    {sendmail
+        var='result'
+        to='test@example.com'
+        subject='Status Update Notification'
+        contents="The status has been updated.(`$prev_content.status.label` => `$curr_content.status.label`)"}
+{/if}

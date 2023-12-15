@@ -1,0 +1,8 @@
+{* Retrieve content before the update *}
+{assign_array var='method_params'                 values=''}
+{assign       var='method_params.topics_id'       value=$row.topics_id}
+{assign       var='method_params.ignore_open_flg' value=true}
+{api_method var='content' model='Topics' method='details' version=1 method_params=$method_params}
+
+{* Keep values available for trigger that after updating content *}
+{assign_globals key='prev_content' value=$content}
