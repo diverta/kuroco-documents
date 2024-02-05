@@ -42,36 +42,35 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      submitted: false,
-      validated: false,
-      submitData: {},
-      error: null,
-    }
-  },
-  methods: {
-    async handleOnValidate() {
-      //Validate the entry
-      try {
-        await this.$axios.$post('/rcms-api/1/form_validate', { ...this.submitData });
-        this.validated = true;
-        this.error = null;
-      } catch (e) {
-        this.error = e.response.data.errors;
-      }
-    },
-    async handleOnSubmit() {
-      //Post processing to Kuroco endpoints
-      try {
-        await this.$axios.$post('/rcms-api/1/form_send', { ...this.submitData });
-        this.submitted = true;
-      } catch (e) {
-        console.log(e);
-      }
-    }
+<script setup>
+import { ref } from 'vue';
+import { useAxios } from '@nuxtjs/axios';
+
+const { $post } = useAxios();
+
+const submitted = ref(false);
+const validated = ref(false);
+const submitData = ref({});
+const error = ref(null);
+
+const handleOnValidate = async () => {
+  //Validate the entry
+  try {
+    await $post('/rcms-api/1/form_validate', { ...submitData.value });
+    validated.value = true;
+    error.value = null;
+  } catch (e) {
+    error.value = e.response.data.errors;
+  }
+};
+
+const handleOnSubmit = async () => {
+  //Post processing to Kuroco endpoints
+  try {
+    await $post('/rcms-api/1/form_send', { ...submitData.value });
+    submitted.value = true;
+  } catch (e) {
+    console.log(e);
   }
 };
 </script>
