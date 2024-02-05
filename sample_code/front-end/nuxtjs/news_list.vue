@@ -9,12 +9,14 @@
   </div>
 </template>
 
-<script>
-export default {
-  async asyncData({ $axios }) {
-    return {
-      response: await $axios.$get('/rcms-api/4/news'),
-    };
-  },
-};
+<script setup>
+import { useFetch } from 'nuxt3'
+import { ref } from 'vue'
+
+const response = ref(null)
+
+useFetch(async ({ $axios }) => {
+  response.value = await $axios.$get('/rcms-api/4/news')
+})
+
 </script>
