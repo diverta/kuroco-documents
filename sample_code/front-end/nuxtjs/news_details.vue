@@ -5,12 +5,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  async asyncData({ $axios, params }) {
-    return {
-      response: await $axios.$get(`/rcms-api/4/newsdetail/${params.slug}`),
-    };
-  },
-};
+<script setup>
+import { useFetch } from 'nuxt3'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const response = ref(null)
+const route = useRoute()
+
+useFetch(async ({ $axios }) => {
+  response.value = await $axios.$get(`/rcms-api/4/newsdetail/${route.value.params.slug}`)
+})
+
 </script>
