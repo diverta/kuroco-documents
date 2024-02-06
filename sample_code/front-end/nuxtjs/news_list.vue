@@ -11,7 +11,7 @@
 
 <script setup>
 const config = useRuntimeConfig()
-const { data: response } = await useFetch('/rcms-api/1/news',{
+const { data: response } = await useFetch('/rcms-api/4/news',{
   baseURL:config.public.apiBase,
   credentials: 'include',
 })
