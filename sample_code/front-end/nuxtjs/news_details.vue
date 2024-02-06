@@ -6,15 +6,11 @@
 </template>
 
 <script setup>
-import { useFetch } from 'nuxt3';
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
-
-const response = ref(null);
 const route = useRoute();
+const config = useRuntimeConfig();
 
-useFetch(async ({ $axios }) => {
-  response.value = await $axios.$get(`/rcms-api/4/newsdetail/${route.value.params.slug}`);
-})
-
+const { data: response } = await useFetch(`/rcms-api/4/newsdetail/${route.params.id}`,{
+baseURL:config.public.apiBase,
+credentials: 'include',
+});
 </script>
