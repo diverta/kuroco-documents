@@ -43,20 +43,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useAxios } from '@nuxtjs/axios';
-
-const { $post } = useAxios();
-
 const submitted = ref(false);
 const validated = ref(false);
 const submitData = ref({});
 const error = ref(null);
+const config = useRuntimeConfig();
 
 const handleOnValidate = async () => {
   //Validate the entry
   try {
-    await $post('/rcms-api/1/form_validate', { ...submitData.value });
+    await $fetch('/rcms-api/1/form_validate', {
+      method: 'POST',
+      body: { ...submitData.value },
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+    });
     validated.value = true;
     error.value = null;
   } catch (e) {
@@ -67,7 +68,12 @@ const handleOnValidate = async () => {
 const handleOnSubmit = async () => {
   //Post processing to Kuroco endpoints
   try {
-    await $post('/rcms-api/1/form_send', { ...submitData.value });
+    await $fetch('/rcms-api/1/form_send', {
+      method: 'POST',
+      body: { ...submitData.value },
+      baseURL: config.public.apiBase,
+      credentials: 'include',
+    });
     submitted.value = true;
   } catch (e) {
     console.log(e);
