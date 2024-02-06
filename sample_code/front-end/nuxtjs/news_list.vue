@@ -10,13 +10,9 @@
 </template>
 
 <script setup>
-import { useFetch } from 'nuxt3';
-import { ref } from 'vue';
-
-const response = ref(null);
-
-useFetch(async ({ $axios }) => {
-  response.value = await $axios.$get('/rcms-api/4/news');
+const config = useRuntimeConfig()
+const { data: response } = await useFetch('/rcms-api/1/news',{
+  baseURL:config.public.apiBase,
+  credentials: 'include',
 })
-
 </script>
