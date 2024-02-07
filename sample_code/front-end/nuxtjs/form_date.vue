@@ -32,7 +32,7 @@
             <dd><input v-model="submitData.from_mail" name='from_mail' type="text"></dd>
           </dl>
           <dl>
-            <dt>Messege</dt>
+            <dt>Message</dt>
             <dd><textarea v-model="submitData.body" name='body'></textarea></dd>
           </dl>
           <dl>
