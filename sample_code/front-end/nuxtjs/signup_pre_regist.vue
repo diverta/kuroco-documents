@@ -37,6 +37,7 @@ const presignupDone = ref(false);
 const email = ref(null);
 const user = ref({});
 const error = ref(null);
+const config = useRuntimeConfig();
 
 async function signup() {
   try {
@@ -47,7 +48,7 @@ async function signup() {
       },
     }
     // post data
-    const res =await fetch('/rcms-api/33/member_invite', {
+    const res =await fetch(`${config.public.apiBase}/rcms-api/33/member_invite`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
