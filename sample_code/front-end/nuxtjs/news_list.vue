@@ -9,12 +9,10 @@
   </div>
 </template>
 
-<script>
-export default {
-  async asyncData({ $axios }) {
-    return {
-      response: await $axios.$get('/rcms-api/4/news'),
-    };
-  },
-};
+<script setup>
+const config = useRuntimeConfig()
+const { data: response } = await useFetch('/rcms-api/4/news',{
+  baseURL:config.public.apiBase,
+  credentials: 'include',
+})
 </script>

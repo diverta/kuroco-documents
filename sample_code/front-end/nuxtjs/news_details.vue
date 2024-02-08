@@ -5,12 +5,12 @@
   </div>
 </template>
 
-<script>
-export default {
-  async asyncData({ $axios, params }) {
-    return {
-      response: await $axios.$get(`/rcms-api/4/newsdetail/${params.slug}`),
-    };
-  },
-};
+<script setup>
+const route = useRoute();
+const config = useRuntimeConfig();
+
+const { data: response } = await useFetch(`/rcms-api/4/newsdetail/${route.params.id}`,{
+baseURL:config.public.apiBase,
+credentials: 'include',
+});
 </script>
