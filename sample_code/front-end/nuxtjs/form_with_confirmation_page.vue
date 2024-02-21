@@ -61,7 +61,7 @@ const handleOnValidate = async () => {
     validated.value = true;
     error.value = null;
   } catch (e) {
-    error.value = e.response.data.errors;
+    error.value = e;
   }
 };
 
