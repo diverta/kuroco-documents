@@ -1,0 +1,20 @@
+{assign_array var="filters" values=""}
+
+{* Get a list of members of the same group by {api_method}. *}
+{assign_array var="method_params" values=""}
+{append var="method_params" index="group_id" value=$smarty.session.arrGroup_id}
+{append var="method_params" index="cnt" value=0}
+{assign_array var="request_params" values=""}
+{api_method
+    var='members'
+    model='Member' method='list' version='1'
+    method_params=$method_params
+    request_params=$request_params
+}
+
+{* Converted to an array of member IDs with {array_column} *}
+{assign var="member_ids" value=$members.list|@array_column:'member_id'}
+
+{* Specify member_id in [member ID] in $filters *}
+{assign var="member_ids_csv" value=','|implode:$member_ids}
+{append var=filters index=filter value="member_id in [`$member_ids_csv`]"}
