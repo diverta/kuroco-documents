@@ -5,16 +5,15 @@
   </div>
 </template>
 
-<script>
-export default {
-  async asyncData({ $axios, route }) {
-    return {
-      response: await $axios.$get(`/rcms-api/6/news/preview`, {
-        params: {
-          preview_token: route.query.preview_token,
-        },
-      }),
-    };
+<script setup>
+const route = useRoute();
+
+const {data: response} = useFetch(`/rcms-api/6/news/preview`, {
+  baseURL:config.public.apiBase,
+  credentials: 'include',
+  params: {
+    preview_token: route.query.preview_token,
   },
-};
+});
+
 </script>
