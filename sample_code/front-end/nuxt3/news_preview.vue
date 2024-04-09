@@ -14,7 +14,7 @@ const route = useRoute();
 const preview_token = route.query.preview_token;
 
 const { data: response } = await useFetch(
-  `${config.public.apiBase}/rcms-api/6/preview`,
+  `${config.public.apiBase}/rcms-api/6/news/preview`,
   {
     credentials: 'include',
     params: {
