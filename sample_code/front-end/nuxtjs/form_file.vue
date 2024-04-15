@@ -92,8 +92,10 @@ export default {
           'Content-Type': 'multipart/form-data', // required to post file as a binary
         },
       });
-      this.$set(this.submitData, key, {})
-      this.$set(this.submitData[key], 'file_id', file_id)
+      this.submitData = {
+        ...this.submitData,
+        [key]: { "file_id": file_id }
+      }
     },
     async handleOnSubmit() {
       //Post processing to Kuroco endpoints
