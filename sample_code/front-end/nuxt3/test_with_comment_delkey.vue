@@ -6,8 +6,7 @@
       {{ resultMessage }}
     </p>
     <div>
-      please type your name:
-      <input v-model="userName" type="text" placeholder="your name" />
+      please type your name: <input v-model="userName" type="text" placeholder="your name" />
     </div>
     <div>
       <ul v-for="comment in comments" :key="comment.comment_id">
