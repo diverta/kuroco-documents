@@ -16,7 +16,9 @@
       </ul>
       <form @submit.prevent="submitComment">
         <input v-model="inputComment" type="text" placeholder="comment" />
-        <button type="submit" :disabled="inputComment === ''">submit</button>
+        <button type="submit" :disabled="inputComment === ''">
+          submit
+        </button>
       </form>
     </div>
   </div>
