@@ -12,20 +12,14 @@
       <ul v-for="comment in comments" :key="comment.comment_id">
         <li>
           {{ comment.note }} by {{ comment.name }}
-          <button
-            type="button"
-            @click="() => deleteComment(comment.comment_id)"
-          >
+          <button type="button" @click="() => deleteComment(comment.comment_id)">
             delete
           </button>
         </li>
       </ul>
       <form @submit.prevent="submitComment">
         <input v-model="inputComment" type="text" placeholder="comment" />
-        <button
-          type="submit"
-          :disabled="inputComment === '' || userName === ''"
-        >
+        <button type="submit" :disabled="inputComment === '' || userName === ''">
           submit
         </button>
       </form>

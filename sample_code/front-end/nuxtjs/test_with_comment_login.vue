@@ -43,7 +43,7 @@ export default {
   middleware: 'auth',
   async asyncData({ $axios, params }) {
     try {
-      const profile = await $axios.$get('/rcms-api/18/profile')
+      const profile = await $axios.$get('/rcms-api/21/profile')
       const response = await $axios.$get(
         '/rcms-api/21/newsdetail/1047'
       )
