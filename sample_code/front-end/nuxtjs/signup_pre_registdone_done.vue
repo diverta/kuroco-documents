@@ -43,9 +43,9 @@
 
 <script>
 export default {
-    validate({ params }) {
+    validate({ query }) {
         //Return 404 if key is invalid
-        return /[!-~]{32}/.test(params.key)
+        return /[!-~]{32}/.test(query.key)
     },
     data() {
         return {
@@ -55,11 +55,11 @@ export default {
         }
     },
     //Obtain pending  member information
-    async asyncData({ $axios, params }) {
+    async asyncData({ $axios, query}) {
         try {
             const invitationRes = await $axios.post('/rcms-api/33/member_invite',
                 {
-                    email_hash: params.key
+                    email_hash: query.key
                 });
             return { invitationRes };
         } catch (e) {
