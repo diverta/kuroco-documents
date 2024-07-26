@@ -2,7 +2,7 @@
   <div>
     <h1>Unsubscribe to Magazine</h1>
     <div>
-      Email: {{$route.query.email}}
+      Email: {{ $route.query.email }}
     </div>
     <p v-if="resultMessage !== null">
       {{ resultMessage }}
