@@ -11,7 +11,7 @@
         <label :for="`s-${magazine.id}`">Subscribe</label>
         <input type="radio" :id="`u-${magazine.id}`" :value="{ 'status': 'unsubscribe', 'id': magazine.id }"
           v-model="submitData[magazine.key]" @change="handleChange(magazine.key)" />
-        <label :for="`u-${magazine.id}`">Unsbscribe</label>
+        <label :for="`u-${magazine.id}`">Unsubscribe</label>
       </div>
 
     </form>
