@@ -14,10 +14,10 @@
 <script setup>
 const config = useRuntimeConfig();
 const response = ref(null);
+const lang = ref(useI18n().locale.value);
 response.value = await fetchNews();
 
 async function fetchNews() {
-  const lang = ref(useI18n().locale.value);
   const res = await useFetch(`/rcms-api/4/news?_lang=${lang.value}`, {
     baseURL: config.public.apiBase,
     credentials: "include",
