@@ -26,38 +26,40 @@
                 </div>
             </form>
         </div>
-        <div v-else-if="presignupDone">
+        <div v-else-if="presignupDone && !error">
             Your pre-registration has been completed. Please check your e-mail.
         </div>
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            presignupDone: false,
-            email: null,
-            user: {},
-            error: null
-        }
-    },
-    methods: {
-        async signup() {
-            try {
-                const payload = {
-                    email: this.email,
-                    ext_info: {
-                        ...this.user
-                    },
-                }
-                // post data
-                await this.$axios.$post('/rcms-api/33/member_invite', payload)
-                this.presignupDone = true
-            } catch (e) {
-                this.error = e.response.data.errors
-            }
-        },
-    },
+<script setup>
+const presignupDone = ref(false);
+const email = ref(null);
+const user = ref({});
+const error = ref(null);
+const config = useRuntimeConfig();
+
+async function signup() {
+  try {
+    const payload = {
+      email: email.value,
+      ext_info: {
+          ...user.value
+      },
+    }
+    // post data
+    const res =await fetch(`${config.public.apiBase}/rcms-api/33/member_invite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      presignupDone.value = true
+    }
+  } catch (e) {
+    error.value = e;
+  }
 }
 </script>
